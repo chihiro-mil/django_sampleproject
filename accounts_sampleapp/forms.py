@@ -50,7 +50,21 @@ class RegisterForm(forms.Form): #password_confirmはDBに入らないため、fo
         if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
             raise forms.ValidationError('パスワードは英字と数字を含めてください')
         return password
-#passwordとpassword_confirmが一致するかチェック
-#問題なければユーザーを作成して保存する
+    #passwordとpassword_confirmが一致するかチェック
+    def clean_password_confirm(self):
+        #入力された確認用パスワードを取得
+        password_confirm = self.cleaned_data.get('password_confirm')
+        #未入力チェック
+        if not password_confirm:
+            raise forms.ValidationError('確認用パスワードを入力してください')
+        
+        #元のpasswordの値を取得
+        password = self.cleaned_data.get('password')
+        #passwordとpassword_confirmが一致しているかチェック
+        if password and password_confirm != password:
+            raise forms.ValidationError('パスワードが一致しません')
+        
+        #問題なければユーザーを作成して保存する
+        return password_confirm
 
 
