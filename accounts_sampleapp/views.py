@@ -22,4 +22,4 @@ def register_view(request):
     else:
         form = RegisterForm()
     #最後に register.htmlを表示してフォームを渡す
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'accounts_sampleapp/register.html', {'form': form})
