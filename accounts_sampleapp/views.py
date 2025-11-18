@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm
 
 #登録完了後、「登録が成功しました」などのメッセージ表示するなら
-from django.contribd import messages
+from django.contrib import messages
 
 def register_view(request):
     #POSTかGETか判定する

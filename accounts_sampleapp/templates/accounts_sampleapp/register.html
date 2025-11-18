@@ -1,96 +1,99 @@
 <!DOCTYPE html>
 <html lang="ja">
+{% load static %}   
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アカウント登録 | SampleApp</title>
+    <link rel="stylesheet" href="{% static "accounts_sampleapp/css/register.css" %}">
 </head>
 <body>
-    <h1>アカウント登録</h1>
-    <!-- フォームタグ:method="POST"を使うとDjangoのビューにデータを送れる -->
-    <form method="POST">
-        <!--　DjangoでPOSTを安全に送るためのトークン（必須）-->
-        {% csrf_token %}
+    <div class="register-form-container">
+        <h1>アカウント登録</h1>
+        <!-- フォームタグ:method="POST"を使うとDjangoのビューにデータを送れる -->
+        <form method="POST">
+            <!--　DjangoでPOSTを安全に送るためのトークン（必須）-->
+            {% csrf_token %}
 
-        <!-- フォーム全体のエラーメッセージ（パスワードと確認用パスワードの比較エラー）-->
-        {% if form.non_field_errors %}
-            <ul class="error-list">
-                {% for error in form.non_field_errors %}
-                    <li class="error-item">{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        <div class="register-form-group">
-            <label for="{{ form.name.id_for_label }}"> <!-- labelfor="{{ form.name.id_for_label }}"でDjangoがformsを元に自動生成した(name_id)inputのidとHTMLのlabelのidをリンクさせる -->
-                {{ form.name.label }} <!-- forms.py name = forms.CharField(label='ユーザー名')をHTMLで表示 -->
-            </label>
-
-            <div class="register-form-input">{{ form.name }}</div> <!-- {{ form.name }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
-
-            {% if form.name.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
+            <!-- フォーム全体のエラーメッセージ（パスワードと確認用パスワードの比較エラー）-->
+            {% if form.non_field_errors %}
                 <ul class="register-error-list">
-                    {% for error in form.name.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
+                    {% for error in form.non_field_errors %}
                         <li class="register-error-item">{{ error }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
-        </div>
 
-        <div class="register-form-group">
-            <label for="{{ form.email.id_for_label }}"> <!-- labelfor="{{ form.email.id_for_label }}"でDjangoがformsを元に自動生成した(email_id)inputのidとHTMLのlabelのidをリンクさせる -->
-                {{ form.email.label }} <!-- forms.py email = forms.EmailField(label='メールアドレス')をHTMLで表示 -->
-            </label>
+            <div class="register-form-group">
+                <label for="{{ form.name.id_for_label }}"> <!-- labelfor="{{ form.name.id_for_label }}"でDjangoがformsを元に自動生成した(name_id)inputのidとHTMLのlabelのidをリンクさせる -->
+                    {{ form.name.label }} <!-- forms.py name = forms.CharField(label='ユーザー名')をHTMLで表示 -->
+                </label>
 
-            <div class="register-form-input">{{ form.email }}</div> <!-- {{ form.email }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
+                <div class="register-form-input">{{ form.name }}</div> <!-- {{ form.name }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
 
-            {% if form.email.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
-                <ul class="register-error-list">
-                    {% for error in form.email.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
-                        <li class="register-error-item">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
+                {% if form.name.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
+                    <ul class="register-error-list">
+                        {% for error in form.name.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
+                            <li class="register-error-item">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
 
-        <div class="register-form-group">
-            <label for="{{ form.password.id_for_label }}"> <!-- labelfor="{{ form.password.id_for_label }}"でDjangoがformsを元に自動生成した(password_id)inputのidとHTMLのlabelのidをリンクさせる -->
-                {{ form.password.label }} <!-- forms.py password = forms.CharField(label='パスワード')をHTMLで表示 -->
-            </label>
+            <div class="register-form-group">
+                <label for="{{ form.email.id_for_label }}"> <!-- labelfor="{{ form.email.id_for_label }}"でDjangoがformsを元に自動生成した(email_id)inputのidとHTMLのlabelのidをリンクさせる -->
+                    {{ form.email.label }} <!-- forms.py email = forms.EmailField(label='メールアドレス')をHTMLで表示 -->
+                </label>
 
-            <div class="register-form-input">{{ form.password }}</div> <!-- {{ form.password }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
+                <div class="register-form-input">{{ form.email }}</div> <!-- {{ form.email }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
 
-            {% if form.password.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
-                <ul class="register-error-list">
-                    {% for error in form.password.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
-                        <li class="register-error-item">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
+                {% if form.email.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
+                    <ul class="register-error-list">
+                        {% for error in form.email.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
+                            <li class="register-error-item">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
 
-        <div class="register-form-group">
-            <label for="{{ form.password_confirm.id_for_label }}"> <!-- labelfor="{{ form.password_confirm.id_for_label }}"でDjangoがformsを元に自動生成した(password_confirm_id)inputのidとHTMLのlabelのidをリンクさせる -->
-                {{ form.password_confirm.label }} <!-- forms.py password_confirm = forms.CharField(label='パスワード確認')をHTMLで表示 -->
-            </label>
+            <div class="register-form-group">
+                <label for="{{ form.password.id_for_label }}"> <!-- labelfor="{{ form.password.id_for_label }}"でDjangoがformsを元に自動生成した(password_id)inputのidとHTMLのlabelのidをリンクさせる -->
+                    {{ form.password.label }} <!-- forms.py password = forms.CharField(label='パスワード')をHTMLで表示 -->
+                </label>
 
-            <div class="register-form-input">{{ form.password_confirm }}</div> <!-- {{ form.password_confirm }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
+                <div class="register-form-input">{{ form.password }}</div> <!-- {{ form.password }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
 
-            {% if form.password_confirm.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
-                <ul class="register-error-list">
-                    {% for error in form.password_confirm.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
-                        <li class="register-error-item">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
+                {% if form.password.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
+                    <ul class="register-error-list">
+                        {% for error in form.password.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
+                            <li class="register-error-item">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
 
-        <div class="register-form-submit">
-            <button type="submit" class="register-submit-button"> <!-- type="submit"でフォーム全体の入力値をPOSTでviews.pyに送信する -->
-                アカウント登録
-            </button>
-        </div>
+            <div class="register-form-group">
+                <label for="{{ form.password_confirm.id_for_label }}"> <!-- labelfor="{{ form.password_confirm.id_for_label }}"でDjangoがformsを元に自動生成した(password_confirm_id)inputのidとHTMLのlabelのidをリンクさせる -->
+                    {{ form.password_confirm.label }} <!-- forms.py password_confirm = forms.CharField(label='パスワード確認')をHTMLで表示 -->
+                </label>
 
-    </form>
+                <div class="register-form-input">{{ form.password_confirm }}</div> <!-- {{ form.password_confirm }}でforms.pyのフィールド定義からDjangoが自動で入力欄を生成 -->
+
+                {% if form.password_confirm.errors %} <!-- 複数入る可能性があるエラーメッセージのリスト形式をDjangoが自動生成　-->
+                    <ul class="register-error-list">
+                        {% for error in form.password_confirm.errors %} <!-- for文でエラーメッセージリストを順番に表示 -->
+                            <li class="register-error-item">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="register-form-submit">
+                <button type="submit" class="register-submit-button"> <!-- type="submit"でフォーム全体の入力値をPOSTでviews.pyに送信する -->
+                    アカウント登録
+                </button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

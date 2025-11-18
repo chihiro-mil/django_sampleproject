@@ -1,0 +1,72 @@
+
+
+.body {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+.register-form-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px;
+}
+
+.h1 {
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.register-form-group {
+    margin-bottom: 20px;
+}
+
+.register-error-list {
+    color: red;
+    margin: 8px 0;
+    font-size: 18px;
+}
+.register-submit-button {
+    padding: 16px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/*スマホ用*/
+@media (max-width: 768px) {
+    .register-form-container {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .h1 {
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .register-form-group {
+        margin-bottom: 15px;
+    }
+    .register-error-list {
+        color: red;
+        margin: 4px 0;
+        font-size: 14px;
+    }
+    .register-submit-button {
+        padding: 12px;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+
+}
