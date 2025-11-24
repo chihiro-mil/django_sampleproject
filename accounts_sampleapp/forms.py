@@ -4,6 +4,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 #パスワードの英数字チェックに必要なモジュール
 import re
+#ログイン画面の存在するユーザー確認機能
+from django.contrib.auth import authenticate
 
 #ファイル内でUserモデルを使いやすくする　Userモデルを取り出してUser変数に保存
 User = get_user_model()
@@ -67,4 +69,41 @@ class RegisterForm(forms.Form): #password_confirmはDBに入らないため、fo
         #問題なければユーザーを作成して保存する
         return password_confirm
 
+#ログイン画面フォーム
+#ログイン用のフォームクラスを定義
+class LoginForm(forms.Form):
+    #メールアドレスの入力欄
+    email = forms.EmailField(
+        label='メールアドレス',
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'example@example.com',
+        })
+    )
+    #パスワードの入力欄
+    password = forms.CharField(
+        label='パスワード',
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'パスワード',
+        })
+    )
+    
+    #フォーム全体のチェック関数　emailとパスワードを入力した後、本当にそのユーザーが存在するか確認
+    def clean(self):
+        cleaned_data = super().clean() #既存のバリエーション結果を取得
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
+        
+        if email and password:
+            user = authenticate(email=email, password=password) #authenticate()でDjangoにこのメールとパスワードユーザーは存在するか聞く　パスワードはDjangoが自動でハッシュ比較
+            
+            #Noneの時、全体のエラーとして追加
+            if user is None:
+                raise forms.ValidationError('メールアドレスまたはパスワードが正しくありません')
+            #後でviewsから取り出すためフォームに保存
+            self.user = user
+        return cleaned_data
+    
+    #clean()の中でself.userに保存したユーザーを安全に取り出すための関数
+    def get_user(self):
+        return getattr(self, 'user', None)
 
