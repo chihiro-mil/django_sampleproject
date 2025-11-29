@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+{% load static %}   
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アカウント設定</title>
+    <link rel="stylesheet" href="{% static "accounts_sampleapp/css/account_settings.css" %}">
+</head>
+<body>
+
+    <!-- タイトル -->
+    <h1>アカウント設定</h1>
+
+    <!-- ログイン中のユーザー名を表示 -->
+    <p>現在のユーザー名：<strong>{{ user.name }}</strong></p>
+
+    <!-- メニュー一覧 -->
+    
+    <div class="account-settings-menu">
+
+        <a href="{% url 'accounts_sampleapp:change_username' %}" class="settings-button">
+            ユーザー名変更
+        </a>
+
+        <a href="{% url 'accounts_sampleapp:change_email' %}" class="settings-button">
+            メールアドレス変更
+        </a>
+
+        <a href="{% url 'accounts_sampleapp:change_password' %}" class="settings-button">
+            パスワード変更
+        </a>
+
+    </div>
+</body>
+</html>

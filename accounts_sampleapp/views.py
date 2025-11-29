@@ -13,6 +13,13 @@ from django.contrib.auth import authenticate, login
 #ログイン画面のフォームを使うため(forms.pyで作成したもの)
 from .forms import LoginForm
 
+#ログインしている状態の時に開けるように制限
+from django.contrib.auth.decorators import login_required
+
+#ユーザー名変更のフォームを使うため
+from .forms import ChangeUsernameForm
+
+
 #アカウント登録画面のビュー
 def register_view(request):
     #POSTかGETか判定する
@@ -61,3 +68,35 @@ def login_view(request):
     
     #login.htmlにformを渡して表示
     return render(request, 'accounts_sampleapp/login.html', {'form': form})
+
+#アカウント設定トップ画面
+@login_required
+def account_settings_view(request):
+    #ログイン中のユーザー情報をテンプレートへ渡す
+    context = {
+        'user': request.user #usernameやemailが使える
+    }
+    return render(request, 'accounts_sampleapp/account_settings.html', context)
+
+#ユーザー名変更画面
+@login_required
+def change_username_view(request):
+    if request.method == 'POST': #POSTの時
+        form = ChangeUsernameForm(request.POST, instance=request.user) #POSTデータをフォームに入れる、instance=request.userを指定するとユーザー情報を置き換えるフォームになる
+        if form.is_valid(): #フォームのバリエーション
+            form.save() #ユーザー名を保存（Userモデルを更新）
+            request.user.refresh_from_db() #保存された最新のユーザー情報をrequest.userに反映
+            messages.success(request, 'ユーザー名を変更しました')
+            return redirect('accounts_sampleapp:account_settings')
+    else: #GETの時
+        form = ChangeUsernameForm(instance=request.user) #初期表示　今のユーザー名を初期値に入れたフォームを作る
+    return render(request, 'accounts_sampleapp/change_username.html', {'form': form}) #テンプレートにフォームを渡す
+
+
+#メールアドレス変更画面
+@login_required
+
+
+
+#パスワード変更画面
+@login_required

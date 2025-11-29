@@ -106,4 +106,30 @@ class LoginForm(forms.Form):
     #clean()の中でself.userに保存したユーザーを安全に取り出すための関数
     def get_user(self):
         return getattr(self, 'user', None)
+    
+#ユーザー名変更フォーム
+class ChangeUsernameForm(forms.ModelForm):
+    name = forms.CharField(
+        label="新しいユーザー名",
+        widget=forms.TextInput(attrs={'placeholder': '新しいユーザー名(20文字以下)'}),
+    )
+    class Meta:
+        model = User #このフォームが操作するモデル
+        fields = ['name'] #変更できる項目はnameだけ
+        
+    def clean_name(self):
+        name = self.cleaned_data.get('name') #ユーザーが入力したnameの値をnameという変数に入れる
+        if not name:  #nameが空やNoneの時
+            raise forms.ValidationError('ユーザー名を入力してください')
+        if not (1 <= len(name) <= 20):
+            raise forms.ValidationError('ユーザー名は２０文字以下で入力してください')
+        if self.instance and name == self.instance.name: #現在のユーザー名と新しいユーザー名が同じ時
+            raise forms.ValidationError('現在のユーザー名と同じです')
+        #nameの重複チェック(アカウント設定じとは内容異なる)
+        qs = User.objects.filter(name=name) #qs=Querysetの略　Userテーブルからnameが一致するユーザーを全体取り出す
+        if self.instance.pk: #自分自身は重複チェックから除外　self.instance.pk＝編集しているユーザー自身のID
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise forms.ValidationError('このユーザー名は既に使われています')
+        return name
 

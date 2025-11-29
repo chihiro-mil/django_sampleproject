@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+{% load static %}   
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー名変更画面</title>
+    <link rel="stylesheet" href="{% static "accounts_sampleapp/css/change_username.css" %}">
+</head>
+<body>
+
+    <!-- タイトル -->
+    <h1>ユーザー名変更</h1>
+
+    <!-- ログイン中のユーザー名を表示 -->
+    <p>現在のユーザー名：<strong>{{ user.name }}</strong></p>
+
+    <!-- フォーム開始 -->
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- 新しいユーザー名 -->
+        <label for="{{ form.name.id_for_label }}">新しいユーザー名</label><br>
+        {{ form.name }}
+
+        <!-- エラーメッセージ -->
+        {% if form.name.errors %}
+            <div>
+                {% for error in form.name.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- 変更ボタン -->
+        <button type="submit">変更</button>
+    </form>
+    
+</body>
+</html>
