@@ -19,6 +19,8 @@ from django.contrib.auth.decorators import login_required
 #ユーザー名変更のフォームを使うため
 from .forms import ChangeUsernameForm
 
+#メールアドレス変更のフォームを使うため
+from .forms import ChangeEmailForm
 
 #アカウント登録画面のビュー
 def register_view(request):
@@ -95,7 +97,17 @@ def change_username_view(request):
 
 #メールアドレス変更画面
 @login_required
-
+def change_email_view(request):
+    if request.method == 'POST':
+        form = ChangeEmailForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            request.user.refresh_from_db()
+            messages.success(request, 'メールアドレスを変更しました')
+            return redirect('accounts_sampleapp:account_settings')
+    else:
+        form = ChangeEmailForm(instance=request.user)
+    return render(request, 'accounts_sampleapp/change_email.html', {'form': form})
 
 
 #パスワード変更画面

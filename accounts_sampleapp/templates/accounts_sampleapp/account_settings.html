@@ -12,6 +12,15 @@
     <!-- タイトル -->
     <h1>アカウント設定</h1>
 
+    <!-- 各変更後のメッセージ表示 -->
+    {% if messages %}
+    <div class="message-area">
+        {% for message in messages %}
+            <p class="success-message">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- ログイン中のユーザー名を表示 -->
     <p>現在のユーザー名：<strong>{{ user.name }}</strong></p>
 

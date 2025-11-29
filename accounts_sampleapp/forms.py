@@ -42,6 +42,15 @@ class RegisterForm(forms.Form): #password_confirmはDBに入らないため、fo
         if User.objects.filter(username=name).exists():
             raise forms.ValidationError('このユーザー名は既に使われています')
         return name
+    
+    def clean_email(self):
+        email = self.changed_data.get('email')
+        if not email:
+            raise forms.ValidationError('メールアドレスを入力してください')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('このメールアドレスは既に登録されています')
+        return email
+    
     #passwordの長さ・英数字チェック
     def clean_password(self):
         password = self.cleaned_data.get('password')
@@ -132,4 +141,24 @@ class ChangeUsernameForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError('このユーザー名は既に使われています')
         return name
-
+    
+#メールアドレス変更フォーム
+class ChangeEmailForm(forms.ModelForm):
+    email = forms.EmailField(
+        label="新しいメールアドレス",
+        widget=forms.EmailInput(attrs={'placeholder': 'xxx@example.com'})
+    )
+    class Meta:
+        model = User
+        fields = ['email']
+        
+    def clean_email(self):
+        email = self.changed_data.get('email')
+        if self.instance and email == self.instance.email: #現在のメールアドレスと新しいメールアドレスが同じ時
+            raise forms.ValidationError('現在のメールアドレスと同じです')
+        qs = User.objects.filter(email=email) #qs=Querysetの略　Userテーブルからemailが一致するユーザーを全体取り出す
+        if self.instance.pk: #自分自身は重複チェックから除外　self.instance.pk＝編集しているユーザー自身のID
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise forms.ValidationError('このメールアドレスは既に使われています')
+        return email
