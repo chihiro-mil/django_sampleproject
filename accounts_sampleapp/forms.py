@@ -7,6 +7,10 @@ import re
 #ログイン画面の存在するユーザー確認機能
 from django.contrib.auth import authenticate
 
+from django.contrib.auth import password_validation
+
+from django.contrib.auth.forms import PasswordChangeForm 
+
 #ファイル内でUserモデルを使いやすくする　Userモデルを取り出してUser変数に保存
 User = get_user_model()
 
@@ -162,3 +166,32 @@ class ChangeEmailForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError('このメールアドレスは既に使われています')
         return email
+    
+#パスワード変更フォーム clean_passwordは不要。現在のパスワードが正しいか、２つの新しいパスワードが一致しているか、パスワードが安全かをDjangoのPasswordChangeFormを継承することで自動チェック
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label='現在のパスワード',
+        widget=forms.PasswordInput(attrs={
+            'placeholder': '現在のパスワード',
+            'class': 'password-input'
+        })
+    )
+    
+    new_password1 = forms.CharField(
+        label='新しいパスワード',
+        widget=forms.PasswordInput(attrs={
+            'placeholder': '現在のパスワード(8文字以上の英数字)',
+            'class': 'password-input'
+        }),
+        strip=True, #strip=Trueで前後の空白（スペース）を削除する。＊Djangoのはstrip=Falseを採用している
+        help_text=password_validation.password_validators_help_text_html()
+    )
+    
+    new_password2 = forms.CharField(
+        label='新しいパスワード(確認)',
+        widget=forms.PasswordInput(attrs={
+            'placeholder': '確認用(同じパスワードを入力)',
+            'class': 'password-input'
+        }),
+        strip=True,
+    )

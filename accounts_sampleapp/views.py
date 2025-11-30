@@ -22,6 +22,12 @@ from .forms import ChangeUsernameForm
 #メールアドレス変更のフォームを使うため
 from .forms import ChangeEmailForm
 
+#パスワード変更後もログイン状態を維持する
+from django.contrib.auth import update_session_auth_hash
+
+#メールアドレス変更のフォームを使うため ChangePasswordFormだとDjangoの標準の名前と被るため
+from .forms import CustomPasswordChangeForm
+
 #アカウント登録画面のビュー
 def register_view(request):
     #POSTかGETか判定する
@@ -112,3 +118,14 @@ def change_email_view(request):
 
 #パスワード変更画面
 @login_required
+def change_password_view(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST) #user=request.userでログインしているユーザーをフォームに渡す、data=request.POSTで画面で入力された現在のパスワード、新しいパスワード、確認用新しいパスワードをチェック
+        if form.is_valid():
+            user = form.save() #現在のパスワード、新しいパスワードと確認用新しいパスワード、パスワードが安全なルールを満たす時にform.save()が動く
+            update_session_auth_hash(request, user) #update_session_auth_hashでパスワードを変更した後もログアウトされないように
+            messages.success(request, 'パスワードを変更しました')
+            return redirect('accounts_sampleapp:account_settings')
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+    return render(request, 'accounts_sampleapp/change_password.html', {'form': form})
