@@ -43,12 +43,12 @@ class RegisterForm(forms.Form): #password_confirmはDBに入らないため、fo
         if not (1 <= len(name) <= 20):
             raise forms.ValidationError('ユーザー名は１文字以上２０文字以下で入力してください')
         #nameの重複チェック
-        if User.objects.filter(username=name).exists():
+        if User.objects.filter(name=name).exists():
             raise forms.ValidationError('このユーザー名は既に使われています')
         return name
     
     def clean_email(self):
-        email = self.changed_data.get('email')
+        email = self.cleaned_data.get('email')
         if not email:
             raise forms.ValidationError('メールアドレスを入力してください')
         if User.objects.filter(email=email).exists():
@@ -129,7 +129,7 @@ class ChangeUsernameForm(forms.ModelForm):
     class Meta:
         model = User #このフォームが操作するモデル
         fields = ['name'] #変更できる項目はnameだけ
-        
+    
     def clean_name(self):
         name = self.cleaned_data.get('name') #ユーザーが入力したnameの値をnameという変数に入れる
         if not name:  #nameが空やNoneの時
@@ -155,9 +155,9 @@ class ChangeEmailForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email']
-        
+
     def clean_email(self):
-        email = self.changed_data.get('email')
+        email = self.cleaned_data.get('email')
         if self.instance and email == self.instance.email: #現在のメールアドレスと新しいメールアドレスが同じ時
             raise forms.ValidationError('現在のメールアドレスと同じです')
         qs = User.objects.filter(email=email) #qs=Querysetの略　Userテーブルからemailが一致するユーザーを全体取り出す

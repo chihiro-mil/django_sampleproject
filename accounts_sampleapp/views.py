@@ -4,6 +4,9 @@ from django.shortcuts import render, redirect
 #RegisterForm:フォームクラスを使うため(forms.pyで作成したもの)
 from .forms import RegisterForm
 
+#ユーザーモデルを安全に取り出すための関数　get_user_modelで標準UserでもカスタムUserでも使用できる
+from django.contrib.auth import get_user_model
+
 #登録完了後、「登録が成功しました」などのメッセージ表示するなら
 from django.contrib import messages
 
@@ -28,6 +31,11 @@ from django.contrib.auth import update_session_auth_hash
 #メールアドレス変更のフォームを使うため ChangePasswordFormだとDjangoの標準の名前と被るため
 from .forms import CustomPasswordChangeForm
 
+
+
+#ファイル内でUserモデルを使いやすくする　Userモデルを取り出してUser変数に保存
+User = get_user_model()
+
 #アカウント登録画面のビュー
 def register_view(request):
     #POSTかGETか判定する
@@ -37,8 +45,17 @@ def register_view(request):
         #フォームをバリエーションする
         if form.is_valid():
             #OKならユーザーを保存して、ホーム画面へリダイレクト
-            form.save()
-            return redirect('home')
+            #カスタムUserをviewsでも安全に取り出す
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            User.objects.create_user(
+                name=name,
+                email=email,
+                password=password,
+            )
+            return redirect('accounts_sampleapp:login') #一旦ログイン画面に設定
             #NGならエラー付きフォームをそのままテンプレートへ渡す
     #GETの時は空フォームを作る
     else:
@@ -66,7 +83,7 @@ def login_view(request):
                 #loginを呼んでDjangoがログイン状態を作る
                 login(request, user)
                 #ログイン後にホーム画面へ移動
-                return redirect('accounts_sampleapp:home')
+                return redirect('accounts_sampleapp:account_settings')
             #認証に失敗したらフォーム全体のエラーとして追加
             else:
                 form.add_error(None, "メールアドレスまたはパスワードが間違っています")
@@ -97,7 +114,7 @@ def change_username_view(request):
             messages.success(request, 'ユーザー名を変更しました')
             return redirect('accounts_sampleapp:account_settings')
     else: #GETの時
-        form = ChangeUsernameForm(instance=request.user) #初期表示　今のユーザー名を初期値に入れたフォームを作る
+        form = ChangeUsernameForm() #初期表示　今のユーザー名を初期値に入れたフォームを作る
     return render(request, 'accounts_sampleapp/change_username.html', {'form': form}) #テンプレートにフォームを渡す
 
 
@@ -112,7 +129,7 @@ def change_email_view(request):
             messages.success(request, 'メールアドレスを変更しました')
             return redirect('accounts_sampleapp:account_settings')
     else:
-        form = ChangeEmailForm(instance=request.user)
+        form = ChangeEmailForm()
     return render(request, 'accounts_sampleapp/change_email.html', {'form': form})
 
 

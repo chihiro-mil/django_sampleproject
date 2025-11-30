@@ -11,11 +11,11 @@
 <div class="login-container">
     <h1 class="login-title">ログイン</h1>
 
-    <!-- method="post"でフォームを送る時はviewsにPOSTという方法で送る action="{% url 'app:login' %}"で送信先はlogin_viweのURL -->
+    {# method="post"でフォームを送る時はviewsにPOSTという方法で送る action="{% url 'accounts_sampleapp:login' %}"で送信先はlogin_viweのURL #}
     <form method="POST" class="login-form">
         {% csrf_token %}
 
-        <!-- ログイン失敗 -->
+        {# ログイン失敗 #}
         {% if form.non_field_errors %}
             <div class="login-error-block">
                 {% for error in form.non_field_errors %}
@@ -24,7 +24,7 @@
             </div>
         {% endif %}
 
-        <!-- メールアドレス -->
+        {# メールアドレス #}
         <div class="login-form-group">
             <label for="{{ form.email.id_for_label }}">メールアドレス</lable>
             <div class="login-form-input">{{ form.email }}</div>
@@ -38,9 +38,9 @@
             {% endif %}
         </div>
 
-        <!-- パスワード -->
+        {# パスワード #}
         <div class="login-form-group">
-            <label for="{{ form.password.id_for_label }}">メールアドレス</lable>
+            <label for="{{ form.password.id_for_label }}">パスワード</lable>
             <div class="login-form-input">{{ form.password }}</div>
 
             {% if form.password.errors %}
@@ -52,7 +52,7 @@
             {% endif %}
         </div>
 
-        <!-- ログインボタン -->
+        {# ログインボタン #}
         <div class="login-form-submit">
             <button type="submit" class="login-button">ログイン</button>
         </div>
